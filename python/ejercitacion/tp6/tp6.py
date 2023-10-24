@@ -1,76 +1,88 @@
 from __future__ import annotations
-from typing import Set, Dict, List
+from typing import List
 
 class Account:
     all_accounts:List[Account]=[]
-    transactions=[]
-    account_quantity=0
+    transactions:List[Transaction]=[]
+    account_quantity = 0
+
     def __init__(self, owner:Owner, account_number=None):
-        self.owner:Owner=owner #puedo asignar directo
-        self.account_number:int=Account.automatic_account_number(account_number)
-        #owner es atributo de instancia
-        self.balance=0.0
+        # puedo asignarle directamente el parámetro owner porque 
+        # es de tipo Owner (y el atributo de instancia owner también!)
+        self.owner:Owner = owner 
+        self.account_number:int = Account.automatic_account_number(account_number)
+        self.balance = 0.0
         Account.all_accounts.append(self)
         
     @staticmethod
     def automatic_account_number(account_number):
-        if account_number==None: 
+        if account_number is None: 
             Account.account_quantity+=1
             return Account.account_quantity
         else: 
             return account_number
 
-		#def __repr__(self): #sirve para cualquier return de una instancia de la clase
-     #   return f"{self.owner.id_number}-{self.owner.name}-{self.balance}"
+	# def __repr__(self): #sirve para cualquier return de una instancia de la clase
+    #   return f"{self.owner.id_number}-{self.owner.name}-{self.balance}"
+
     @staticmethod
     def get_account_by_number(account_number):
-        for account in Account.all_accounts: #este es atributo de clase (All_accounts), lo de adentro instancias
-            #cada elemento es una instancia de account
-            if account.account_number==account_number: 
+        # recorro la lista all_accounts, que la llamo con el prefijo de la clase Account porque es un atributo de clase
+        for account in Account.all_accounts: 
+            # variable account del for es un iterador, o sea, va saltando de elemento en elemento en la 
+            # lista all_accounts. En cada iteración va a ser una instancia distinta de Account, porque 
+            # los elementos de la lista all_accounts son de tipo Account
+            if account.account_number == account_number: 
                 return account
         raise ValueError(f"El número de cuenta {account_number} no tiene cuenta asociada") #si ya hizo return no lee esta linea
 
-    # Otra posible solución sabiendo que el lugar que ocupa cada account en la lista coincide con su account_number-1
+    # Otra posible solución sabiendo que el lugar que ocupa cada account en la lista coincide con account_number-1
     # def get_account_by_number(account_number):
-		# 		if all_accounts[account_number-1] is not None:
-    #     	return all_accounts[account_number-1]
-    #     raise ValueError(f"El número de cuenta {account_number} no tiene cuenta asociada") #si ya hizo return no lee esta linea
+	#   if all_accounts[account_number-1] is not None:
+    #       return all_accounts[account_number-1]
+    #   raise ValueError(f"El número de cuenta {account_number} no tiene cuenta asociada") #si ya hizo return no lee esta linea
     
+    # "Getter" de atributo de clase all_accounts (podría ser privado)
     @staticmethod
     def get_accounts(): 
         return(Account.all_accounts)
     
+    # "Getter" de atributo de clase transactions (podría ser privado)
+    @staticmethod
+    def get_transactions(): 
+        return(Account.transactions)
+    
+    # "Getter" de atributo de instancia balance (podría ser privado)
     def get_balance(self):
         return(self.balance)
     
-    def make_deposit(self, amount):
-        self.balance+=amount 
-        Account.transactions.append(Transactions("Deposit", amount))
+    def deposit(self, amount):
+        self.balance += amount 
+        Account.transactions.append(Transaction("Deposit", amount))
 
-    def make_withdrawls(self, amount):
-        if amount<=self.balance: #explicar o agregar en el assertEqual
-            self.balance-=amount
-            Account.transactions.append(Transactions("Withdrawl", amount))
+    def withdraw(self, amount):
+        if amount <= self.balance:
+            self.balance -= amount
+            Account.transactions.append(Transaction("Withdrawal", amount))
         else: 
             raise ValueError("Fondos insuficientes")
 
     def transfer(self, amount:float, destination_account:Account):
-        if amount<=self.balance: 
-            self.balance-=amount
-            destination_account.balance+=amount 
-            Account.transactions.append(Transactions("Transfer", amount, destination_account))
+        if amount <= self.balance: 
+            self.balance -= amount
+            destination_account.balance += amount 
+            Account.transactions.append(Transaction("Transfer", amount, destination_account))
         else:
             raise ValueError("Fondos insuficientes")
 
 
-class Transactions: 
+class Transaction: 
     def __init__(self, type:str, amount:float, destination_account:Account=None):
-        self.type=type
-        self.amount=amount
-        if type=="Transfer": # si no es transfer no lo agrega el None porque no lo inicializo
-            self.destination_account=destination_account
+        self.type = type
+        self.amount = amount
+        if type == "Transfer": # si no es transfer no lo agrega el None porque no lo inicializo
+            self.destination_account = destination_account
         
-
 
 class Owner:
     def __init__(self, id_number:int, name:str): 

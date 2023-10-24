@@ -1,6 +1,7 @@
 import unittest
+from typing import List
 
-from tp6 import (Account, Owner)
+from tp6 import (Account, Owner, Transaction)
 
 moe: Owner = Owner(1, "Moe") # => {id_number: 1, name: "Moe"}
 larry: Owner = Owner(2, "Larry")
@@ -17,7 +18,7 @@ class AccountTest(unittest.TestCase):
         self.assertEqual(1, moe_account.owner.id_number)
         self.assertEqual("Moe", moe_account.owner.name)
         self.assertEqual(0.0, moe_account.balance)
-        #no es moe_account.balance, pero como no aclara, puede no ser privado
+        # no es moe_account.balance, pero como no aclara, puede no ser privado
 
     def test_deposit(self):
         moe_account = Account(1, moe)
@@ -54,20 +55,20 @@ class AccountTest(unittest.TestCase):
         Account(1, moe) # => lo guarda en all_accounts[0]
         Account(2, larry) # => lo guarda en all_accounts[1]
         Account(3, curly) # => lo guarda en all_accounts[2]
-        # Este test me dice que Account.get_account(3).name tiene que ser igual a "Curly"
+        # Este test me dice que Account.get_account_by_number(3).name tiene que ser igual a "Curly"
         # => tendría que devolver la instancia de Owner del Account con id 3
-        # self.assertEqual("Curly", Account.get_account(3).name)
+        # self.assertEqual("Curly", Account.get_account_by_number(3).name)
 
-        # Este test me dice que Account.get_account(3).OWNER.name tiene que ser igual a "Curly"
-        self.assertEqual("Curly", Account.get_account(3).owner.name)
+        # Este test me dice que Account.get_account_by_number(3).OWNER.name tiene que ser igual a "Curly"
+        self.assertEqual("Curly", Account.get_account_by_number(3).owner.name)
 
-        self.assertEqual("Curly", Account.get_account(3).owner.name)
+        self.assertEqual("Curly", Account.get_account_by_number(3).owner.name)
 
     def test_access_account_with_automatic_account_number(self):
         Account(moe) 
         Account(larry) 
         Account(curly) 
-        self.assertEqual("Curly", Account.get_account(3).owner.name)
+        self.assertEqual("Curly", Account.get_account_by_number(3).owner.name)
 
     def test_transactions(self):
         moe_account = Account(1, moe)
@@ -76,7 +77,7 @@ class AccountTest(unittest.TestCase):
         moe_account.transfer(30, larry_account)
         moe_account.withdraw(40)
         self.assertEqual(30, moe_account.get_balance())
-        transactions = moe_account.get_transactions()
+        transactions:List[Transaction] = moe_account.get_transactions()
         self.assertEquals(3, len(transactions))
         amounts = [t.amount for t in transactions]
         self.assertEquals([100, 30, 40], amounts)
