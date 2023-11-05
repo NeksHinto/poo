@@ -1,3 +1,5 @@
+package TP10;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,11 +36,11 @@ public class Account {
         return accountQuantity +=1;
     }
     //como indicar en la linea que sigue que es de tipo account?
-    public static Account getAccountByNumber(Integer account_number) {
+    public static Account getAccount(Integer account_number) {
         //for each método de las colecciones
         //for más largo para guardar el índice
         for (Account a : allAccounts) {
-            //Account.all_accounts=all_accounts
+            //TP10.Account.all_accounts=all_accounts
             //para ver si dos objetos son iguales, equals() para comparar instancias de clase
             if (a.accountNumber.equals(account_number)) {
                 return a;
@@ -62,7 +64,7 @@ public class Account {
 
     public void deposit(float amount) {
         this.balance += amount;
-        //no hace falta Account.transactions...
+        //no hace falta TP10.Account.transactions...
         transactions.add(new Transaction("Deposit", amount));
         //necesito new para crear nueva instancia. Con new llama constructor
         //recorre un constructor o el otro según la cantidad de parámetros y el tipo de los parámetros
@@ -102,5 +104,4 @@ public class Account {
     }
 }
 // para llamar a atributo o método de clase necesito nombre de clase. en python, en java no!
-
 

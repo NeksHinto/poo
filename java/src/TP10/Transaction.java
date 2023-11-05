@@ -1,3 +1,5 @@
+package TP10;
+
 public class Transaction{
     private String type;
     private float amount;
